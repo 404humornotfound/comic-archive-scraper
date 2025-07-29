@@ -8,19 +8,8 @@ import time
 url = "https://webcomicarchive.com/#/WebToons/PinchPoint?strip=1-000.jpg"
 # result = requests.get(url).text
 # soup = bs(result, features="html.parser")
-"""
-pure jpg: 
-https://webcomicarchive.com/comic/WebToons/PinchPoint/1-000.jpg
 
-big html:
-https://webcomicarchive.com/#/WebToons/PinchPoint?strip=1-000.jpg
-
-
-plan: change # to comic and change ?strip= to /
-
-
-"""
-# start("https://webcomicarchive.com/#/WebToons/PinchPoint?strip=1-000.jpg")
+webtoon = Webtoon(url)
 
 
 with open("w.html", "r", encoding="utf8") as f:
@@ -29,17 +18,7 @@ with open("w.html", "r", encoding="utf8") as f:
 tags = soup.find_all("a", class_ = "list-group-item block", href=True)
 tags.insert(0, soup.find_all("a", class_="list-group-item block border-top-0", href=True))
 
-
-i = tags[0][0]
-time.sleep(5)
-lnk = i.get('href')
-lnk = lnk.replace("#", "comic")
-lnk = lnk.replace("?strip=", "/")
-
-response = requests.get(lnk)
-if response.status_code == 200:
-    with open("a.jpg", "wb") as f:
-        f.write(response.content)
-else:
-    print(f"error: {response.status_code}")
+for i in tags[:10]:
+    if not os.path.isdir(f"ch{webtoon.chapter_name}"):
+        webtoon.create_chapter_folder()
 
